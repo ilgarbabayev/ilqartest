@@ -54,7 +54,7 @@
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts",
-      "name": "[concat(variables('storageAccountName'), copyIndex())]",
+      "name": "[concat(variables('storageAccountName'), copyIndex(1))]",
       "apiVersion": "2016-01-01",
       "location": "[resourceGroup().location]",
       "sku": {
@@ -70,7 +70,7 @@
     {
       "apiVersion": "2016-03-30",
       "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[concat(variables('publicIPAddressName'), copyIndex())]",
+      "name": "[concat(variables('publicIPAddressName'), copyIndex(1))]",
       "location": "[resourceGroup().location]",
       "copy": {
         "name": "publicIPAddresscopy",
@@ -79,7 +79,7 @@
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
-          "domainNameLabel": "[concat(parameters('dnsLabelPrefix'), copyIndex())]"
+          "domainNameLabel": "[concat(parameters('dnsLabelPrefix'), copyIndex(1))]"
         }
       }
     },
@@ -107,7 +107,7 @@
     {
       "apiVersion": "2016-03-30",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[concat(variables('nicName'), copyIndex())]",
+      "name": "[concat(variables('nicName'), copyIndex(1))]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "publicIPAddresscopy",
@@ -116,11 +116,11 @@
       "properties": {
         "ipConfigurations": [
           {
-            "name": "[concat('ipconfig', copyIndex())]",
+            "name": "[concat('ipconfig', copyIndex(1))]",
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
               "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('publicIPAddressName'), copyIndex()))]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('publicIPAddressName'), copyIndex(1)))]"
               },
               "subnet": {
                 "id": "[variables('subnetRef')]"
@@ -137,7 +137,7 @@
     {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(variables('vmName'), copyIndex())]",
+      "name": "[concat(variables('vmName'), copyIndex(1))]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "storageCopy",
@@ -148,7 +148,7 @@
           "vmSize": "Standard_D1"
         },
         "osProfile": {
-          "computerName": "[concat(variables('vmName'), copyIndex())]",
+          "computerName": "[concat(variables('vmName'), copyIndex(1))]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]"
         },
@@ -162,7 +162,7 @@
           "osDisk": {
             "name": "osdisk",
             "vhd": {
-              "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts/', concat(variables('storageAccountName'), copyIndex()))).primaryEndpoints.blob, 'vhds/osdisk.vhd')]"
+              "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts/', concat(variables('storageAccountName'), copyIndex(1)))).primaryEndpoints.blob, 'vhds/osdisk.vhd')]"
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
@@ -173,7 +173,7 @@
               "diskSizeGB": "100",
               "lun": 0,
               "vhd": {
-                "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts/', concat(variables('storageAccountName'), copyIndex()))).primaryEndpoints.blob, 'vhds/datadisk1.vhd')]"
+                "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts/', concat(variables('storageAccountName'), copyIndex(1)))).primaryEndpoints.blob, 'vhds/datadisk1.vhd')]"
               },
               "createOption": "Empty"
             }
@@ -182,14 +182,14 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicName'), copyIndex()))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicName'), copyIndex(1)))]"
             }
           ]
         },
         "diagnosticsProfile": {
           "bootDiagnostics": {
             "enabled": "true",
-            "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', concat(variables('storageAccountName'), copyIndex()))).primaryEndpoints.blob]"
+            "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', concat(variables('storageAccountName'), copyIndex(1)))).primaryEndpoints.blob]"
           }
         }
       },
