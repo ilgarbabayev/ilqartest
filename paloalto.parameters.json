@@ -86,7 +86,8 @@
             "type": "string",
             "allowedValues": [
                 "Standard_D3",
-                "Standard_D4"
+                "Standard_D4",
+		"Standard_DS3"
             ],
             "metadata": {
                 "description": "Azure VM size for VM-Series"
